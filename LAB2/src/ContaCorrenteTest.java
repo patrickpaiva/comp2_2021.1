@@ -12,11 +12,17 @@ public class ContaCorrenteTest {
     private Correntista joao;
     private float saldoInicial;
 
+    private ContaCorrente contaDoBeltrano;
+    private Correntista beltrano;
+
     @Before
     public void setUp() {
         joao = new Correntista("Joao", 222222);
         contaDoJoao = new ContaCorrente(1, joao);
         saldoInicial = contaDoJoao.getSaldoEmReais();
+
+        beltrano = new Correntista("Beltrano", 5555);
+        contaDoBeltrano = new ContaCorrente(5, beltrano);
     }
 
     @Test
@@ -67,7 +73,8 @@ public class ContaCorrenteTest {
         contaDoJoao.sacar(2);
         assertEquals("O valor sacado deve ser descontado do saldo da conta",
                 saldoInicial - 2,
-                contaDoJoao.getSaldoEmReais()
+                contaDoJoao.getSaldoEmReais(),
+                FLOAT_DELTA
         );
     }
 
@@ -76,7 +83,8 @@ public class ContaCorrenteTest {
         contaDoJoao.sacar(100000);
         assertEquals("Saques de valores maiores que o saldo não devem ser permitidos",
                 saldoInicial,
-                contaDoJoao.getSaldoEmReais()
+                contaDoJoao.getSaldoEmReais(),
+                FLOAT_DELTA
         );
     }
 
@@ -107,17 +115,42 @@ public class ContaCorrenteTest {
 
         contaDoJoao.efetuarTransferecia(contaDaMaria, 100000);
 
-        assertEquals("",
+        assertEquals("Deve manter o saldo em caso de transferência sem fundos.",
                 saldoInicial,
                 contaDaMaria.getSaldoEmReais(),
                 FLOAT_DELTA
         );
 
-        assertEquals("",
+        assertEquals("Deve manter o saldo em caso de transferência sem fundos.",
                 saldoInicial,
                 contaDoJoao.getSaldoEmReais(),
                 FLOAT_DELTA
         );
+    }
+
+    @Test
+    public void testarGetQuantidadeDeTransacoesDeTodasAsContas() {
+        Correntista maria = new Correntista("Maria", 22222);
+        ContaCorrente contaDaMaria = new ContaCorrente(2, maria);
+
+        Correntista fulano = new Correntista("Fulano", 33333);
+        ContaCorrente contaDoFulano = new ContaCorrente(3, fulano);
+
+        contaDoJoao.efetuarTransferecia(contaDaMaria, 100000); // transação sem sucesso
+        contaDaMaria.receberDepositoEmDinheiro(50); // transação feita com sucesso
+        contaDoFulano.sacar(5); // transação feita com sucesso
+
+        // outras três transações foram feitas com sucesso nos testes anteriores.
+        assertEquals("Deve exibir a quantidade total de transações efetuadas no banco.",
+                5, // três transações que foram feitas com sucesso em testes anteriores mais 2 acima
+                contaDoJoao.getQuantidadeDeTransacoesDeTodasAsContas());
+    }
+
+    @Test
+    public void testarGetCpfDoCorrentista() {
+        assertEquals("Deve ser possível consultar o cpf do correntista pela conta.",
+                beltrano.getCpf(),
+                contaDoBeltrano.getCpfDoCorrentista());
     }
 
 }

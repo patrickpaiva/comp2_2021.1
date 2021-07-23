@@ -22,6 +22,7 @@ public class ContaCorrente {
         this.saldoEmReais = SALDO_INICIAL_DA_CONTA;  // saldo inicial doado pelo banco
         this.transacoes = new ArrayList<>();
         this.transacoes.add("Conta criada com saldo de " + this.saldoEmReais);
+        this.correntista = correntista;
     }
 
     public float getSaldoEmReais() {
@@ -30,8 +31,8 @@ public class ContaCorrente {
 
     public void receberDepositoEmDinheiro(float valor) {
         if (valor <= 0) {
-            return;  // valor inválido; não faz nada!
-            // ToDo lançar uma exceção
+            System.out.println("Impossível receber valor negativo ou zero.");
+            return;
         }
 
         this.saldoEmReais += valor;
@@ -45,8 +46,7 @@ public class ContaCorrente {
     }
 
     public long getCpfDoCorrentista() {
-        return 0;
-        // ToDo IMPLEMENT ME!!!!!!
+        return this.correntista.getCpf();
     }
 
     public String getExtrato() {
@@ -64,14 +64,36 @@ public class ContaCorrente {
      * @return o total de transações
      */
     public static int getQuantidadeDeTransacoesDeTodasAsContas() {
+        System.out.println("Foram feitas " + quantidadeDeTransacoesDeTodasAsContas + " transações.");
         return quantidadeDeTransacoesDeTodasAsContas;
     }
 
     public void sacar(float valor) {
-        // ToDo IMPLEMENT ME!!!
+        if (valor > this.getSaldoEmReais()) {
+            System.out.println("Saldo insuficiente para o saque.");
+            return;
+        }
+
+        this.saldoEmReais -= valor;
+
+        String registroTransacao = "Saque feito em dinheiro: " + valor;
+
+        this.transacoes.add(registroTransacao);
+        quantidadeDeTransacoesDeTodasAsContas++;
     }
 
     public void efetuarTransferecia(ContaCorrente contaDestino, float valor) {
-        // ToDo IMPLEMENT ME!!!
+        if (valor > this.getSaldoEmReais()) {
+            System.out.println("Saldo insuficiente para o transferência.");
+            return;
+        }
+
+        this.saldoEmReais -= valor;
+        contaDestino.saldoEmReais += valor;
+
+        String registroTransacao = "Transferência entre contas efetuada no valor de: " + valor;
+
+        this.transacoes.add(registroTransacao);
+        quantidadeDeTransacoesDeTodasAsContas++;
     }
 }
