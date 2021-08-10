@@ -24,6 +24,7 @@ public class ContaCorrenteTest {
     public void setUp() {
         joao = new Correntista("João", cpfDoJoao);
         contaDoJoao = new Conta(1, joao);
+        joao.setContaCorrente(contaDoJoao);
 
         maria = new Correntista("Maria", cpfDaMaria);
         contaDaMaria = new Conta(2, maria);
@@ -196,6 +197,36 @@ public class ContaCorrenteTest {
 
         assertFalse("Contas encerradas não devem constar da lista de contas " +
                 "gerenciadas por gerente algum", gerenteDeContaCarlos.ehGerenteDaConta(contaDoJoao));
+    }
+
+    @Test
+    public void testarAbrirContaInvestimento() {
+        ContaInvestimento contaInvestimentoDoJoao = new ContaInvestimento(123, joao, "poupança", 0.2f);
+        assertTrue(contaInvestimentoDoJoao instanceof ContaInvestimento);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testarAbrirContaInvestimentoSemCorrenteVinculada() {
+        new ContaInvestimento(123, maria, "poupança", 0.2f);
+    }
+
+    @Test
+    public void testarAplicarJurosContaInvestimento() {
+        ContaInvestimento contaInvestimentoDoJoao = new ContaInvestimento(123, joao, "poupança", 0.20f);
+        contaInvestimentoDoJoao.receberDepositoEmDinheiro(90);
+        contaInvestimentoDoJoao.aplicarJuros();
+        assertEquals(120, contaInvestimentoDoJoao.getSaldoEmReais(), FLOAT_DELTA);
+    }
+
+    @Test
+    public void testarResgatarTotalContaInvestimento() {
+        ContaInvestimento contaInvestimentoDoJoao = new ContaInvestimento(123, joao, "poupança", 0.20f);
+        contaInvestimentoDoJoao.receberDepositoEmDinheiro(90);
+        contaInvestimentoDoJoao.aplicarJuros();
+        contaInvestimentoDoJoao.resgatarTotal();
+        assertEquals(0, contaInvestimentoDoJoao.getSaldoEmReais(), FLOAT_DELTA);
+        assertEquals(130, contaDoJoao.getSaldoEmReais(), FLOAT_DELTA);
+
     }
 
 

@@ -6,9 +6,9 @@ public class Conta {
 
     private final int numero;
 
-    private Correntista correntista;
+    protected Correntista correntista;
 
-    private float saldoEmReais = 0;
+    protected float saldoEmReais = 0;
 
     private ArrayList<String> transacoes;
 

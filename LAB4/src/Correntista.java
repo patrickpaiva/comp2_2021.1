@@ -5,13 +5,12 @@ public class Correntista extends PessoaFisica {
     private static final int LIMITE_DEFAULT = 100;
 
     private float limiteChequeEspecial;
-    private Conta conta;
-    private ArrayList<ContaInvestimento> investimentos;
+    private Conta contaCorrente;
+    private ContaInvestimento contaInvestimento;
 
     public Correntista(String nome, long cpf) {
         super(nome, cpf);
-        this.conta = null;
-        this.investimentos = new ArrayList<>();
+        this.contaCorrente = null;
         this.limiteChequeEspecial = LIMITE_DEFAULT;
     }
 
@@ -24,10 +23,20 @@ public class Correntista extends PessoaFisica {
     }
 
     public float getTotalInvestido() {
-        return 0;  // ToDo IMPLEMENT ME!!
+        return this.contaInvestimento.getSaldoEmReais();
     }
 
     public Conta getContaCorrente() {
-        return conta;
+        return contaCorrente;
+    }
+
+    public ContaInvestimento getContaInvestimento() { return contaInvestimento; }
+
+    public void setContaCorrente(Conta contaCorrente) {
+        this.contaCorrente = contaCorrente;
+    }
+
+    public void setContaInvestimento(ContaInvestimento contaInvestimento) {
+        this.contaInvestimento = contaInvestimento;
     }
 }
