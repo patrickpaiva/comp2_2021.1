@@ -16,19 +16,35 @@ public class SomaDoParTest {
         for (int elemento : array) {
             lista.add(elemento);
         }
+
+        for (int i = 1000; i < 1000000; i++) {
+            lista.add(i);
+        }
     }
 
     @Test
-    public void testarSomaDoParQuandoEncontra() {
-        assertEquals(Integer.valueOf(-8), SomaDoPar.encontrarParComSomaDada(lista, 4));
-        assertEquals(Integer.valueOf(4), SomaDoPar.encontrarParComSomaDada(lista, 53));
+    public void testarSomaDoParQuandoEncontraLinear() {
+        long inicio = System.currentTimeMillis();
+        assertEquals(Integer.valueOf(-8), SomaDoPar.encontrarParComSomaDadaLinear(lista, 4));
+        assertEquals(Integer.valueOf(4), SomaDoPar.encontrarParComSomaDadaLinear(lista, 53));
+        long duracao = System.currentTimeMillis() - inicio;
+        System.out.printf("O tempo de duração da execução linear foi: %.4f\n", (duracao/1000f));
+    }
+
+    @Test
+    public void testarSomaDoParQuandoEncontraQuadratico() {
+        long inicio = System.currentTimeMillis();
+        assertEquals(Integer.valueOf(-8), SomaDoPar.encontrarParComSomaDadaQuadratico(lista, 4));
+        assertEquals(Integer.valueOf(4), SomaDoPar.encontrarParComSomaDadaQuadratico(lista, 53));
+        long duracao = System.currentTimeMillis() - inicio;
+        System.out.printf("O tempo de duração da execução quadratica foi: %.4f\n", (duracao/1000f));
     }
 
     @Test
     public void testarSomaDoParQuandoNaoEncontra() {
-        assertNull(SomaDoPar.encontrarParComSomaDada(lista, 1000000));
-        assertNull(SomaDoPar.encontrarParComSomaDada(lista, 1));
-        assertNull(SomaDoPar.encontrarParComSomaDada(lista, 0));
+        assertNull(SomaDoPar.encontrarParComSomaDadaLinear(lista, 10000000));
+        assertNull(SomaDoPar.encontrarParComSomaDadaLinear(lista, 1));
+        assertNull(SomaDoPar.encontrarParComSomaDadaLinear(lista, 0));
     }
 
 }
