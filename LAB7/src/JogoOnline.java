@@ -45,18 +45,26 @@ public class JogoOnline {
         return this.jogadorByUsername.get(username);
     }
 
-    public boolean fazerLogin(String username, String senha) {
+    public void fazerLogin(String username, String senha) throws SenhaInvalidaException, UsuarioInexistenteException {
         Jogador jogador = encontrarJogador(username);
-        if (jogador != null) {
-            if (jogador.getSenha().equals(senha)) {
-                jogador.setOnline(true);
-                return true;
-            }
+
+        if (jogador == null) {
+            throw new UsuarioInexistenteException();
         }
-        return false;
+
+        if (jogador.getSenha().equals(senha)) {
+            jogador.setOnline(true);
+
+        } else {
+            throw new SenhaInvalidaException();
+        }
+
     }
 
     public void fazerLogout(Jogador jogador) {
+        if (!jogador.isOnline()) {
+            throw new RuntimeException();
+        }
         jogador.setOnline(false);
     }
 

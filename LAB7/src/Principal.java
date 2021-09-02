@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class Principal {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SenhaInvalidaException, UsuarioInexistenteException {
 
 
         Random random = new Random();
@@ -28,9 +28,10 @@ public class Principal {
         int loginsBemSucedidos = 0;
         for (int i = 1; i <= LOGINS; i++) {
             String username = "Jogador" + i;
-            if (jogo.fazerLogin(username, "" + i)) {
-                loginsBemSucedidos++;
-            }
+            jogo.fazerLogin(username, "" + i);
+
+            loginsBemSucedidos++;
+
         }
 
         duracao = System.currentTimeMillis() - inicio;

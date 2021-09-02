@@ -24,16 +24,16 @@ public class JogoOnlineTest {
 //        }
 //    }
 
-//    // equivalentemente...
-//
-//    @Test(expected = UsuarioInexistenteException.class)
-//    public void testarLoginComUsuarioDesconhecido() {
-//        JogoOnline jogo = new JogoOnline();
-//        jogo.fazerLogin("UsuarioQualquerDesconhecido", "1234");
-//    }
+    // equivalentemente...
+
+    @Test(expected = UsuarioInexistenteException.class)
+    public void testarLoginComUsuarioDesconhecido() throws SenhaInvalidaException, UsuarioInexistenteException {
+        JogoOnline jogo = new JogoOnline();
+        jogo.fazerLogin("UsuarioQualquerDesconhecido", "1234");
+    }
 
     @Test
-    public void testarCadastroELogin() {
+    public void testarCadastroELogin() throws SenhaInvalidaException, UsuarioInexistenteException {
         Jogador jogadorJoao = jogo.cadastrarJogador("joao", "1234");
         assertNotNull(jogadorJoao);
         assertEquals("joao", jogadorJoao.getUsername());
@@ -52,19 +52,19 @@ public class JogoOnlineTest {
         assertNotNull(jogadorJoao);
         assertEquals("joao", jogadorJoao.getUsername());
 
-//        try {
-//            jogo.fazerLogin("joao", "3246523");
-//            fail("O fazerLogin deveria lançar uma SenhaInvalidaException!!!");
-//
-//        } catch (SenhaInvalidaException e) {
-//            // ok, era esperado que ela acontecesse!!!!
-//        }
+        try {
+            jogo.fazerLogin("joao", "3246523");
+            fail("O fazerLogin deveria lançar uma SenhaInvalidaException!!!");
+
+        } catch (SenhaInvalidaException | UsuarioInexistenteException e) {
+            // ok, era esperado que ela acontecesse!!!!
+        }
 
         assertFalse(jogadorJoao.isOnline());
     }
 
     @Test
-    public void testarIniciarPartida() {
+    public void testarIniciarPartida() throws SenhaInvalidaException, UsuarioInexistenteException {
         Jogador jogadorJoao = jogo.cadastrarJogador("joao", "1234");
         Jogador jogadoraMaria = jogo.cadastrarJogador("maria", "3456");
 
@@ -86,7 +86,7 @@ public class JogoOnlineTest {
     }
 
     @Test
-    public void testarLogout() {
+    public void testarLogout() throws SenhaInvalidaException, UsuarioInexistenteException {
         Jogador jogadoraMaria = jogo.cadastrarJogador("maria", "3456");
 
         jogo.fazerLogin("maria", "3456");
