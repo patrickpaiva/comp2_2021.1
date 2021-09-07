@@ -63,6 +63,15 @@ public class JogoOnline {
         return listaDeJogadores;
     }
 
+    public List<Jogador> obterJogadoresEmOrdemAlfabetica() {
+        ArrayList<Jogador> listaDeJogadores = new ArrayList<>(this.jogadorByUsername.values());
+
+        ComparadorDeJogadoresLexicografico comparador = new ComparadorDeJogadoresLexicografico();
+        listaDeJogadores.sort(comparador);
+
+        return listaDeJogadores;
+    }
+
     private Jogador encontrarJogador(String username) {
         return this.jogadorByUsername.get(username);
     }
