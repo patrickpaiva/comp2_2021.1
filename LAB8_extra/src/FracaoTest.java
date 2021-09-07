@@ -1,5 +1,9 @@
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class FracaoTest {
@@ -210,5 +214,36 @@ public class FracaoTest {
 
         fracao = new Fracao(0, 7, false);
         assertEquals("0", fracao.toString());
+    }
+
+    @Test
+    public void testarCompareTo() {
+        Fracao fracao1 = new Fracao(1, 3, false);
+        Fracao fracao2 = new Fracao(1, -3);
+        Fracao fracao3 = new Fracao(2, 5);
+        Fracao fracao4 = new Fracao(8, 4);
+        Fracao fracao5 = new Fracao(9, 1);
+        Fracao fracao6 = new Fracao(0, 7);
+        Fracao fracao7 = new Fracao(0, 7, false);
+
+        List<Fracao> lista = new ArrayList<>();
+
+        lista.add(fracao1);
+        lista.add(fracao2);
+        lista.add(fracao3);
+        lista.add(fracao4);
+        lista.add(fracao5);
+        lista.add(fracao6);
+        lista.add(fracao7);
+
+        Collections.sort(lista);
+
+        assertEquals("-1/3", lista.get(0).toString());
+        assertEquals("-1/3", lista.get(1).toString());
+        assertEquals("0", lista.get(2).toString());
+        assertEquals("0", lista.get(3).toString());
+        assertEquals("2/5", lista.get(4).toString());
+        assertEquals("8/4", lista.get(5).toString());
+        assertEquals("9", lista.get(6).toString());
     }
 }
