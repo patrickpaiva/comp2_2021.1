@@ -7,7 +7,7 @@ public class Principal {
                 "jogo1",
                 "zezinho",
                 "luizinho",
-                10,
+                10000,
                 dadosDeGamao,
                 dadosTriplos
         );
