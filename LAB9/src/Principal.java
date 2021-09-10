@@ -12,6 +12,6 @@ public class Principal {
                 dadosTriplos
         );
 
-        jogo1.jogar();
+        System.out.println(jogo1.jogar());
     }
 }

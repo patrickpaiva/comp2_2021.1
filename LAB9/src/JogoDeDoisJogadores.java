@@ -40,13 +40,9 @@ public abstract class JogoDeDoisJogadores {
         for (int i = 0; i < numeroDeRodadas; i++){
             resultadoRodada = executarRodadaDoJogo();
 
-            switch (resultadoRodada) {
-                case 1:
-                    vitoriasJogador1++;
-                case 2:
-                    vitoriasJogador2++;
-                case 0:
-            }
+            if (resultadoRodada == 1) {vitoriasJogador1++;}
+            if (resultadoRodada == 2) {vitoriasJogador2++;}
+
         }
 
         int calculoVencedor = vitoriasJogador1 - vitoriasJogador2;
