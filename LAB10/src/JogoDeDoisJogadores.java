@@ -10,7 +10,7 @@ public abstract class JogoDeDoisJogadores {
     private final String nomeJogo;
     private final String nomeJogador1;
     private final String nomeJogador2;
-    private final int numeroDeRodadas;
+    private int numeroDeRodadas;
 
     private ArrayList<Partida> historicoResultados;
 
@@ -42,6 +42,10 @@ public abstract class JogoDeDoisJogadores {
         return numeroDeRodadas;
     }
 
+    public void setNumeroDeRodadas(int numeroDeRodadas) {
+        this.numeroDeRodadas = numeroDeRodadas;
+    }
+
     public int jogar() {
 
         int contVitoriasJogador1 = 0;
@@ -61,7 +65,7 @@ public abstract class JogoDeDoisJogadores {
 
         // armazena a partida no histórico
         Partida partidaTerminada = new Partida(
-                new Date(),
+                this.historicoResultados.size()+1, new Date(),
                 contVitoriasJogador1,
                 contVitoriasJogador2,
                 this.numeroDeRodadas - contVitoriasJogador1 - contVitoriasJogador2);
@@ -117,7 +121,14 @@ public abstract class JogoDeDoisJogadores {
      * @return o percentual, como um float entre 0 (0%) e 100 (100%)
      */
     public float getPercentualVitoriasJogador1() {
-        return 0;  // ToDo IMPLEMENT ME!!!!
+        float vitorias = 0;
+
+        for (Partida historicoResultado : this.historicoResultados) {
+            if (historicoResultado.contRodadasVencidasJogador1 > historicoResultado.contRodadasVencidasJogador2) {
+                vitorias++;
+            }
+        }
+        return (vitorias/this.historicoResultados.size())*100;
     }
 
     /**
@@ -127,7 +138,15 @@ public abstract class JogoDeDoisJogadores {
      * @return o percentual, como um float entre 0 (0%) e 100 (100%)
      */
     public float getPercentualVitoriasJogador2() {
-        return 0;  // ToDo IMPLEMENT ME!!!!
+        float vitorias = 0;
+
+        for (Partida historicoResultado : this.historicoResultados) {
+            if (historicoResultado.contRodadasVencidasJogador2 > historicoResultado.contRodadasVencidasJogador1) {
+                vitorias++;
+            }
+        }
+
+        return (vitorias/this.historicoResultados.size())*100;
     }
 
     /**
@@ -137,7 +156,15 @@ public abstract class JogoDeDoisJogadores {
      * @return o percentual, como um float entre 0 (0%) e 100 (100%)
      */
     public float getPercentualEmpates() {
-        return 0;  // ToDo IMPLEMENT ME!!!!
+        float empates = 0;
+
+        for (Partida historicoResultado : this.historicoResultados) {
+            if (historicoResultado.contRodadasVencidasJogador1 == historicoResultado.contRodadasVencidasJogador2) {
+                empates++;
+            }
+        }
+
+        return (empates/ this.historicoResultados.size())*100;
     }
 
     protected abstract int executarRodadaDoJogo();
@@ -146,16 +173,17 @@ public abstract class JogoDeDoisJogadores {
      * Inner class auxiliar para armazenar resultados de partidas
      */
     private class Partida {
-
+        final int id;
         final Date data;
         final int contRodadasVencidasJogador1;
         final int contRodadasVencidasJogador2;
         final int contEmpates;
 
-        Partida(Date data,
+        Partida(int id, Date data,
                 int contRodadasVencidasJogador1,
                 int contRodadasVencidasJogador2,
                 int contEmpates) {
+            this.id = id;
             this.data = data;
             this.contRodadasVencidasJogador1 = contRodadasVencidasJogador1;
             this.contRodadasVencidasJogador2 = contRodadasVencidasJogador2;
