@@ -1,4 +1,4 @@
-import java.util.Map;
+import java.util.*;
 
 public class DadoGenerico<T> implements Sorteador<T> {
 
@@ -10,7 +10,21 @@ public class DadoGenerico<T> implements Sorteador<T> {
 
     @Override
     public T sortear() {
-        // ToDo IMPLEMENT ME!!!!
-        return null;
+        T maiorKey = null;
+
+        Object[] keys = frequenciaByResultado.keySet().toArray();
+        Arrays.sort(keys);
+
+
+        Integer max = Collections.max(frequenciaByResultado.values());
+        int valorSorteado = new Random().nextInt(max);
+
+        for (Object key : keys) {
+            if (valorSorteado < frequenciaByResultado.get(key)) {
+                maiorKey = (T) key;
+            }
+        }
+
+        return maiorKey;
     }
 }
