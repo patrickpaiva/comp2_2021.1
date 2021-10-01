@@ -1,8 +1,6 @@
 package modelo;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Usuario {
 
@@ -12,13 +10,17 @@ public class Usuario {
 
     private String endereco;
 
-    private Set<Livro> objetosADevolver = new HashSet<>();
+    private Map<Livro, Integer> objetosADevolver = new HashMap<>();
+
+    private Integer livrosEmPosseDoUsuario;
 
     public Usuario(String nome, long cpf) {
 
         this.nome = nome;
 
         this.cpf = cpf;
+
+        this.livrosEmPosseDoUsuario = 0;
     }
 
     public long getCpf() {
@@ -44,20 +46,52 @@ public class Usuario {
     }
 
     public void devolverLivro( Livro livro) {
-        objetosADevolver.remove(livro);
+        if(objetosADevolver.get(livro) == 1) {
+            objetosADevolver.remove(livro);
+            livrosEmPosseDoUsuario--;
+            return;
+        }
+
+        int quantidadeNova = objetosADevolver.get(livro) - 1;
+
+        objetosADevolver.replace(livro, quantidadeNova);
+
+        livrosEmPosseDoUsuario--;
+
         return;
     }
 
     public void emprestarLivro (Livro livro) {
-        objetosADevolver.add(livro);
-        return;
+        if (objetosADevolver.containsKey(livro)) {
+            objetosADevolver.replace(livro, objetosADevolver.get(livro) + 1);
+        } else {
+            objetosADevolver.put(livro, 1);
+        }
+        livrosEmPosseDoUsuario++;
     }
 
     public boolean possuiObjeto (Object obj){
-        if(objetosADevolver.contains(obj)){
+        if(objetosADevolver.containsKey(obj)){
             return true;
         }else{
             return false;
         }
+    }
+
+    public int quantidadeLivrosEmPosse () {
+        return this.livrosEmPosseDoUsuario;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Usuario usuario = (Usuario) o;
+        return cpf == usuario.cpf;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cpf);
     }
 }

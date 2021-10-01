@@ -60,7 +60,7 @@ public class BibliotecaTest {
     }
 
     @Test
-    public void testeGetUsuario() {
+    public void testeGetUsuario() throws UsuarioNaoCadastradoException {
         assertEquals("Um usuário cadastrado deve ser encontrável a partir de seu CPF",
                 usuario1, biblioteca.getUsuario(cpfUsuario1));
     }
@@ -82,7 +82,7 @@ public class BibliotecaTest {
     }
 
     @Test
-    public void testeCadastrarUsuarioJaCadastrado() {
+    public void testeCadastrarUsuarioJaCadastrado() throws UsuarioNaoCadastradoException {
         String novoNome = "Fulano de Tal";
         String novoEndereco = "Novo endereco";
         Usuario usuarioRepetido = new Usuario(novoNome, cpfUsuario1);
@@ -99,7 +99,7 @@ public class BibliotecaTest {
 
     @Test
     public void testeEmprestarLivro()
-            throws UsuarioNaoCadastradoException, LimiteEmprestimosExcedidoException, DevolucaoInvalidaException {
+            throws UsuarioNaoCadastradoException, LimiteEmprestimosExcedidoException {
         assertTrue("A biblioteca deve poder emprestar livros (que estejam disponíveis) para usuários que não tenham" +
                 " excedido o limite de empréstimos", biblioteca.emprestarLivro(livroAbundante, usuario1));
         assertEquals("O empréstimo de um livro deve atualizar a quantidade de livros devidos por aquele usuário",

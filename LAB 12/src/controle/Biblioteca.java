@@ -11,6 +11,12 @@ import java.util.Map;
 
 public class Biblioteca {
 
+    private int totalLivrosNaEstante = 0;
+
+    private Map<Long, Usuario> usuariosByCpf = new HashMap<>();
+    private Map<Livro, Integer> quantidadeByLivros = new HashMap<>();
+
+
     /** quantidade mínima de unidades de um livro que precisam existir nas estantes da biblioteca para
      que o livro possa ser emprestado */
     public static final int MIN_COPIAS_PARA_PODER_EMPRESTAR = 2;
@@ -27,6 +33,13 @@ public class Biblioteca {
      * @param usuario o usuário a ser inserido/atualizado.
      */
     public void cadastrarUsuario(Usuario usuario) {
+        if (usuariosByCpf.containsKey(usuario.getCpf())){
+            usuariosByCpf.get(usuario.getCpf()).setNome(usuario.getNome());
+            usuariosByCpf.get(usuario.getCpf()).setEndereco(usuario.getEndereco());
+
+        } else {
+            usuariosByCpf.put(usuario.getCpf(), usuario);
+        }
     }
 
     /**
@@ -35,15 +48,19 @@ public class Biblioteca {
      * @param cpf o CPF do usuário desejado
      * @return o usuário, caso exista; ou null, caso não exista nenhum usuário cadastrado com aquele CPF
      */
-    public Usuario getUsuario(long cpf) {
-        return null;  // ToDo IMPLEMENT ME!!
+    public Usuario getUsuario(long cpf) throws UsuarioNaoCadastradoException {
+        if (!usuariosByCpf.containsKey(cpf)){
+            throw new UsuarioNaoCadastradoException();
+        }
+
+        return usuariosByCpf.get(cpf);
     }
 
     /**
      * @return o número total de usuários cadastrados na biblioteca
      */
     public int getTotalDeUsuariosCadastrados() {
-        return 0;  // ToDo IMPLEMENT ME!!
+        return usuariosByCpf.size();
     }
 
     /**
@@ -53,7 +70,14 @@ public class Biblioteca {
      * @param quantidade o número de cópias do livro sendo adquiridas
      */
     public void incluirLivroNoAcervo(Livro livro, int quantidade) {
-        // ToDo IMPLEMENT ME!!
+        if (quantidadeByLivros.containsKey(livro)){
+            int quantidadeNova = quantidadeByLivros.get(livro) + quantidade;
+            quantidadeByLivros.replace(livro, quantidadeNova);
+        } else {
+            quantidadeByLivros.put(livro, quantidade);
+        }
+
+        totalLivrosNaEstante += quantidade;
     }
 
     /**
@@ -75,7 +99,24 @@ public class Biblioteca {
      */
     public boolean emprestarLivro(Livro livro, Usuario usuario)
             throws UsuarioNaoCadastradoException, LimiteEmprestimosExcedidoException {
-        return false;  // ToDo IMPLEMENT ME!!
+        if (!quantidadeByLivros.containsKey(livro)) return false;
+
+        if (quantidadeByLivros.get(livro) < MIN_COPIAS_PARA_PODER_EMPRESTAR) return false;
+
+        if (!usuariosByCpf.containsKey(usuario.getCpf())){
+            throw new UsuarioNaoCadastradoException();
+        }
+
+        if (usuario.quantidadeLivrosEmPosse() == MAX_LIVROS_DEVIDOS) {
+            throw new LimiteEmprestimosExcedidoException();
+        }
+
+
+        usuario.emprestarLivro(livro);
+        quantidadeByLivros.replace(livro, (quantidadeByLivros.get(livro) - 1));
+        totalLivrosNaEstante -= 1;
+
+        return true;
     }
 
     /**
@@ -87,7 +128,14 @@ public class Biblioteca {
      * @throws DevolucaoInvalidaException se o livro informado não se encontra emprestado para o usuário informado
      */
     public void receberDevolucaoLivro(Livro livro, Usuario usuario) throws DevolucaoInvalidaException {
-        // ToDo IMPLEMENT ME!!
+        if (!usuario.possuiObjeto(livro) || !quantidadeByLivros.containsKey(livro)){
+            throw new DevolucaoInvalidaException();
+        }
+
+        usuario.devolverLivro(livro);
+        quantidadeByLivros.replace(livro, (quantidadeByLivros.get(livro) + 1));
+        totalLivrosNaEstante += 1;
+
     }
 
     /**
@@ -98,7 +146,7 @@ public class Biblioteca {
      *         ou não seja nem mesmo um usuário cadastrado na biblioteca, retorna zero, não deve nada
      */
     public int getQuantidadeDeLivrosDevidos(Usuario usuario) {
-        return 0;  // ToDo IMPLEMENT ME!!
+        return usuario.quantidadeLivrosEmPosse();
     }
 
     /**
@@ -106,7 +154,7 @@ public class Biblioteca {
      *         não-emprestadas de todos os livros do acervo da biblioteca).
      */
     public int getQuantidadeDeLivrosNaEstante() {
-        return 0;  // ToDo IMPLEMENT ME!!!
+        return totalLivrosNaEstante;
     }
 
     /**
@@ -117,6 +165,8 @@ public class Biblioteca {
      * @return o número de cópias não-emprestadas daquele livro
      */
     public int getQuantidadeDeLivrosNaEstante(Livro livro) {
-        return 0;  // ToDo IMPLEMENT ME!!
+        if (!quantidadeByLivros.containsKey(livro)) return 0;
+
+        return quantidadeByLivros.get(livro);
     }
 }
