@@ -1,3 +1,6 @@
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Esta classe implementa um álbum (de figurinhas, selos, etc.) online, permitindo
  * colecionar itens que possuem uma posição específica no álbum.
@@ -12,6 +15,11 @@
  */
 public class Album<T extends Colecionavel> {
 
+    private int tamanhoDoAlbum;
+    private int quantItensPorPacotinho;
+    private Map<Integer, T> colecionavelByPosicao; // colecionaveis coladas no album
+    private Map<Integer, Integer> qtdRepetidasByPosicao; // colecionaveis repetidas
+
     /**
      * Construtor.
      *
@@ -21,7 +29,10 @@ public class Album<T extends Colecionavel> {
      * @param quantItensPorPacotinho A quantidade de itens em cada pacotinho adquirido para este álbum
      */
     public Album(int tamanhoDoAlbum, int quantItensPorPacotinho) {
-        // ToDo IMPLEMENT ME!!
+        this.tamanhoDoAlbum = tamanhoDoAlbum;
+        this.quantItensPorPacotinho = quantItensPorPacotinho;
+        this.colecionavelByPosicao = new HashMap<>();
+        this.qtdRepetidasByPosicao = new HashMap<>();
     }
 
     /**
@@ -35,14 +46,37 @@ public class Album<T extends Colecionavel> {
      *                                    (por indicar uma posição menor que 1 ou maior que seu tamanho)
      */
     public void receberNovoPacotinho(Pacotinho<T> pacotinho) throws PacotinhoInvalidoException {
-        // ToDo IMPLEMENT ME!!
+        if (pacotinho.size() != this.quantItensPorPacotinho) throw new PacotinhoInvalidoException();
+
+        for (T colecionavel: pacotinho) {
+            if (colecionavel.getPosicao() < 1 || colecionavel.getPosicao() > this.tamanhoDoAlbum){
+                throw new PacotinhoInvalidoException();
+            }
+        }
+
+        for (T fig: pacotinho) {
+            if (this.colecionavelByPosicao.containsKey(fig.getPosicao())) {
+                this.adicionarRepetida(fig.getPosicao());
+            } else {
+                this.colecionavelByPosicao.put(fig.getPosicao(), fig);
+            }
+        }
+    }
+
+    private void adicionarRepetida(Integer posicao) {
+        if (!this.qtdRepetidasByPosicao.containsKey(posicao)) {
+            this.qtdRepetidasByPosicao.put(posicao, 1);
+        } else {
+            Integer qtdColecionavelRepetida = this.qtdRepetidasByPosicao.get(posicao);
+            this.qtdRepetidasByPosicao.put(posicao, (qtdColecionavelRepetida + 1));
+        }
     }
 
     /**
      * @return a quantidade total de figurinhas que este álbum apresenta quando se encontra completo
      */
     public int getTamanho() {
-        return 0;  // ToDo IMPLEMENT ME!!
+        return this.tamanhoDoAlbum;
     }
 
     /**
@@ -50,29 +84,29 @@ public class Album<T extends Colecionavel> {
      * isto é, o total de itens distintos que foram recebidos até o momento
      */
     public int getQuantItensColados() {
-        return 0;  // ToDo IMPLEMENT ME!!
+        return this.colecionavelByPosicao.size();
     }
 
     /**
      * @return o total de itens repetidos que foram acumulados até o momento
      */
     public int getQuantItensRepetidos() {
-        return 0;  // ToDo IMPLEMENT ME!!
+        return this.qtdRepetidasByPosicao.size();
     }
 
     public boolean possuiItemColado(int posicao) {
-        return false;  // ToDo IMPLEMENT ME!!
+        return this.colecionavelByPosicao.containsKey(posicao);
     }
 
     public boolean possuiItemRepetido(int posicao) {
-        return false;  // ToDo IMPLEMENT ME!!
+        return this.qtdRepetidasByPosicao.containsKey(posicao);
     }
 
     /**
      * @return a quantidade de itens que faltam para o álbum ficar completo
      */
     public int getQuantItensFaltantes() {
-        return 0;  // ToDo IMPLEMENT ME!!
+        return (this.getTamanho() - this.colecionavelByPosicao.size());
     }
 
     /**
@@ -80,6 +114,6 @@ public class Album<T extends Colecionavel> {
      * @return o item que está colado na posição especificada, se houver; null, caso contrário
      */
     public T getItemColado(int posicao) {
-        return null;  // ToDo IMPLEMENT ME!!
+        return this.colecionavelByPosicao.get(posicao);
     }
 }

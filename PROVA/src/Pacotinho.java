@@ -11,12 +11,20 @@ import java.util.ArrayList;
  */
 public class Pacotinho<T extends Colecionavel> extends ArrayList<T> {
 
+    private int tamanho;
+
     public Pacotinho(int tamanho) {
         super();
+
+        this.tamanho = tamanho;
     }
 
     @Override
     public boolean add(T elemento) {
-        return false;  // ToDo IMPLEMENT ME!
+        if (this.size() == this.tamanho) {
+            throw new IllegalStateException();
+        } else {
+           return super.add(elemento);
+        }
     }
 }
